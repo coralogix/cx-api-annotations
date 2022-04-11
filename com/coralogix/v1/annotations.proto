@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package com.coralogix.v1;
+
+import "google/protobuf/descriptor.proto";
+
+/// Message used for attaching descriptions metadata for audit logging
+message AuditLogDescription {
+  /// Simple textual description
+  optional string description = 1;
+}
+
+extend google.protobuf.MethodOptions {
+  optional AuditLogDescription audit_log_description = 5000;
+}
+
+// Coralogix code gen message extension options
+message CxGenMessage {
+  // Resource name, can be used if you want to have more separated resources per service.
+  string resource = 1;
+  // Ordered index of id's, which are used to identify the resource. Most resources would have only one id.
+  repeated int32 id_index = 2;
+  // User defined data for a resource
+  int32 user_defined_message_index = 3;
+  // Server resource state for a resource
+  int32 server_generated_message_index = 4;
+}
+
+// Message extensions for code generation purposes
+extend google.protobuf.MessageOptions {
+  // Coralogix code generator message annotations.
+  CxGenMessage  cx_gen_message = 5001;
+}
+
+// Coralogix code gen method extension options
+enum CxGenMethodType {
+  // Unspecified method type
+  CX_GEN_METHOD_TYPE_UNSPECIFIED = 0;
+  // Method is used to create a resource.
+  CX_GEN_METHOD_TYPE_CREATE = 1;
+  // Method is used for updating existing resource.
+  CX_GEN_METHOD_TYPE_UPDATE = 2;
+  //  Method is used to delete a resource.
+  CX_GEN_METHOD_TYPE_DELETE = 3;
+  // Method is used to get a resources.
+  CX_GEN_METHOD_TYPE_GET = 4;
+}
+
+// Method extensions for code generation purposes
+message CxGenMethod{
+  // Resource name, can be used if you want to have more separated resources per service.
+  string resource = 1;
+  // Method type being called on k8s resource reconciliation.
+  CxGenMethodType type = 2;
+}
+
+extend google.protobuf.MethodOptions {
+  // Coralogix code generator method annotations.
+  CxGenMethod cx_gen_method = 5002;
+}
