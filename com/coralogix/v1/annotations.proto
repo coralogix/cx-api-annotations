@@ -24,6 +24,10 @@ message CxGenMessage {
   int32 user_defined_message_index = 3;
   // Server resource state for a resource
   int32 server_generated_message_index = 4;
+  // CRD group, for example com.coralogix
+  string group = 5;
+  // CRD version, for example v1
+  string version = 6;
 }
 
 // Message extensions for code generation purposes
