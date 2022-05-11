@@ -16,17 +16,22 @@ extend google.protobuf.MethodOptions {
 
 // Coralogix code gen message extension options
 message CxGenMessage {
+  // This boolean controls if crd & k8s operator should be generated for message annotated with this.
+  bool resource = 1;
   // Resource name, can be used if you want to have more separated resources per service.
-  string resource = 1;
-  // Ordered index of id's, which are used to identify the resource. Most resources would have only one id.
-  repeated int32 id_index = 2;
+  //   defaults to message name on which this annotation is specified.
+  string resource_name = 2;
   // User defined data for a resource
+  //   defaults to field with name `user_defined`
   int32 user_defined_message_index = 3;
   // Server resource state for a resource
+  //   defaults to field with name `server_generated`
   int32 server_generated_message_index = 4;
   // CRD group, for example com.coralogix
+  //  defaults to last two `.` separated strings of package
   string group = 5;
   // CRD version, for example v1
+  //   defaults to package.splitBy('.').drop(2).find(_.startsWith("v"))
   string version = 6;
 }
 
@@ -53,8 +58,11 @@ enum CxGenMethodType {
 // Method extensions for code generation purposes
 message CxGenMethod{
   // Resource name, can be used if you want to have more separated resources per service.
+  //   defaults to Create<ResourceName> if `CxGenMessage` exists on message of corresponding resource name to
+  //   * `<ResourceName>Service`
   string resource = 1;
   // Method type being called on k8s resource reconciliation.
+  //   does not need explicit definition, by default there is lookup for `Create|Delete|Update<ResourceName>`
   CxGenMethodType type = 2;
 }
 
